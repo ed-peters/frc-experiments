@@ -3,11 +3,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.shooter.ShooterTuningCommand;
-import frc.robot.subsystems.arm2.ArmHardwareSim;
-import frc.robot.subsystems.arm2.ArmSubsystem;
-import frc.robot.subsystems.shooter.ShooterHardwareSim;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.commands.arm.ArmTeleopCommand;
+import frc.robot.commands.limelight.AprilTagPoseEstimateCommand;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.swerve.SwerveDriveSubsystem;
+import frc.robot.subsystems.vision.LimelightSubsystem;
+import frc.robot.subsystems.wheel.WheelSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,37 +18,45 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
  */
 public class Robot extends TimedRobot {
 
-  private ArmSubsystem arm;
-  private ShooterSubsystem shooter;
-  private XboxController controller;
+    private XboxController controller;
+    private ArmSubsystem arm;
+    private WheelSubsystem shooter;
+    private WheelSubsystem intake;
+    private LimelightSubsystem limelight;
+    private SwerveDriveSubsystem drive;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
+    /**
+     * This function is run when the robot is first started up and should be used for any
+     * initialization code.
+     */
+    @Override
+    public void robotInit() {
 
-    controller = new XboxController(0);
+        controller = new XboxController(0);
 
-    arm = new ArmSubsystem(new ArmHardwareSim());
-    arm.setDefaultCommand(new ArmTuningCommand(arm));
+        arm = new ArmSubsystem(3, 4);
+        arm.setDefaultCommand(new ArmTeleopCommand(arm, () -> -controller.getLeftY()));
 
-    shooter = new ShooterSubsystem(new ShooterHardwareSim());
-    shooter.setDefaultCommand(new ShooterTuningCommand(shooter));
-  }
+        shooter = new WheelSubsystem(1);
+        shooter.setDefaultCommand(shooter.stopCommand());
 
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-  }
+        intake = new WheelSubsystem(2);
+        intake.setDefaultCommand(intake.stopCommand());
 
-  @Override
-  public void teleopInit() {}
+        limelight = new LimelightSubsystem(drive::getPose);
+        limelight.setDefaultCommand(new AprilTagPoseEstimateCommand(limelight, drive));
+    }
 
-  @Override
-  public void teleopExit() {
-    arm.release();
-    shooter.release();
-  }
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+    }
+
+    @Override
+    public void teleopInit() {
+    }
+
+    @Override
+    public void teleopExit() {
+    }
 }

@@ -2,7 +2,9 @@ package frc.robot.util;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.function.BooleanConsumer;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.*;
@@ -12,6 +14,10 @@ import java.util.function.*;
  * some unit conversions
  */
 public class SmarterDashboard {
+
+    public static void putChooser(String name, SendableChooser<?> chooser) {
+        SmartDashboard.putData(name, chooser);
+    }
 
     public static void putData(String name, Consumer<DashboardBuilder> consumer) {
         SmartDashboard.putData(name, builder -> consumer.accept(new DashboardBuilder(builder)));
@@ -23,6 +29,10 @@ public class SmarterDashboard {
 
         public DashboardBuilder(SendableBuilder builder) {
             this.builder = builder;
+        }
+
+        public void addDoubleArray(String name, Supplier<double[]> getter) {
+            builder.addDoubleArrayProperty(name, getter, null);
         }
 
         public void addDouble(String name, DoubleSupplier getter) {
