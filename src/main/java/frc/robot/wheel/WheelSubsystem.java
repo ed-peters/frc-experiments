@@ -1,4 +1,4 @@
-package frc.robot.subsystems.wheel;
+package frc.robot.wheel;
 
 import com.revrobotics.*;
 import edu.wpi.first.math.MathUtil;

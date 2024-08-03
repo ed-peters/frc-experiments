@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.util.sendable.Sendable;
@@ -7,6 +9,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.util.Arrays;
 import java.util.function.*;
 
 /**
@@ -92,6 +95,36 @@ public class SmarterDashboard {
 
         public void addBoolean(String name, BooleanSupplier getter, BooleanConsumer setter) {
             builder.addBooleanProperty(name, getter, setter);
+        }
+
+        public void addSpeeds(String name, Supplier<ChassisSpeeds> supplier) {
+            final double [] data = new double[3];
+            addDoubleArray(name, () -> {
+                ChassisSpeeds speeds = supplier.get();
+                if (speeds == null) {
+                    Arrays.fill(data, 0.0);
+                } else {
+                    data[0] = Units.metersToFeet(speeds.vxMetersPerSecond);
+                    data[1] = Units.metersToFeet(speeds.vyMetersPerSecond);
+                    data[2] = Units.radiansToDegrees(speeds.omegaRadiansPerSecond);
+                }
+                return data;
+            });
+        }
+
+        public void addPose(String name, Supplier<Pose2d> supplier) {
+            final double [] data = new double[3];
+            addDoubleArray(name, () -> {
+                Pose2d pose = supplier.get();
+                if (pose == null) {
+                    Arrays.fill(data, 0.0);
+                } else {
+                    data[0] = pose.getX();
+                    data[1] = pose.getY();
+                    data[2] = pose.getRotation().getDegrees();
+                }
+                return data;
+            });
         }
     }
 }

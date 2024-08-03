@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision;
+package frc.robot.limelight;
 
 public class TargetInfo {
 

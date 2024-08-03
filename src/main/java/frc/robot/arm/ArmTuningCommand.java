@@ -1,9 +1,8 @@
-package frc.robot.commands.arm;
+package frc.robot.arm;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.util.SmarterDashboard;
 
 public class ArmTuningCommand extends Command {

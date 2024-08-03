@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.arm;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
@@ -32,6 +32,7 @@ public class ArmSubsystem extends SubsystemBase {
     public static final double kP = 0.018;
     public static final double kG = 0.42;
     public static final double kV = 0.0;
+
     private final CANSparkMax leadMotor;
     private final CANSparkMax followMotor;
     private final SparkPIDController leadPid;

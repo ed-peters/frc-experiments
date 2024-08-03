@@ -3,12 +3,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.arm.ArmTeleopCommand;
-import frc.robot.commands.limelight.AprilTagPoseEstimateCommand;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.swerve.SwerveDriveSubsystem;
-import frc.robot.subsystems.vision.LimelightSubsystem;
-import frc.robot.subsystems.wheel.WheelSubsystem;
+import frc.robot.arm.ArmTeleopCommand;
+import frc.robot.limelight.AprilTagPoseEstimateCommand;
+import frc.robot.arm.ArmSubsystem;
+import frc.robot.swerve.MockSwerveDriveSubsystem;
+import frc.robot.swerve.SwerveDriveSubsystem;
+import frc.robot.limelight.LimelightSubsystem;
+import frc.robot.wheel.WheelSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,6 +34,8 @@ public class Robot extends TimedRobot {
     public void robotInit() {
 
         controller = new XboxController(0);
+
+        drive = new MockSwerveDriveSubsystem();
 
         arm = new ArmSubsystem(3, 4);
         arm.setDefaultCommand(new ArmTeleopCommand(arm, () -> -controller.getLeftY()));

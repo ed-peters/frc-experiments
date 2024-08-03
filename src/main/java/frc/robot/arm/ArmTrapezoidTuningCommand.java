@@ -1,11 +1,10 @@
-package frc.robot.commands.arm;
+package frc.robot.arm;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.util.SmarterDashboard;
 
 public class ArmTrapezoidTuningCommand extends Command {

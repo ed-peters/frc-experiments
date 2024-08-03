@@ -1,19 +1,17 @@
-package frc.robot.commands.limelight;
+package frc.robot.limelight;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.swerve.SwerveDriveSubsystem;
-import frc.robot.subsystems.vision.LimelightPipeline;
-import frc.robot.subsystems.vision.LimelightSubsystem;
-import frc.robot.subsystems.vision.TargetInfo;
+import frc.robot.swerve.SwerveDriveSubsystem;
+import frc.robot.swerve.DriveAtFixedSpeedCommand;
 import frc.robot.util.SmarterDashboard;
 
 /**
  * Uses the {@link LimelightSubsystem} to get target information and the {@link SwerveDriveSubsystem}
  * to spin the robot until the target is within a certain range of the center of the field of view.
  *
- * Combine this with a {@link frc.robot.commands.drive.DriveAtFixedSpeedCommand} to implement a
+ * Combine this with a {@link DriveAtFixedSpeedCommand} to implement a
  * behavior of orienting on a target and then driving towards it.
  */
 public class AlignToTargetCommand extends Command {

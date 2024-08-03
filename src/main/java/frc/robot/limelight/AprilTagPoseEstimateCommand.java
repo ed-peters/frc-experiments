@@ -1,11 +1,8 @@
-package frc.robot.commands.limelight;
+package frc.robot.limelight;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.swerve.SwerveDriveSubsystem;
-import frc.robot.subsystems.vision.LimelightPipeline;
-import frc.robot.subsystems.vision.LimelightSubsystem;
-import frc.robot.subsystems.vision.PoseEstimate;
+import frc.robot.swerve.SwerveDriveSubsystem;
 import frc.robot.util.SmarterDashboard;
 
 public class AprilTagPoseEstimateCommand extends Command {
@@ -13,7 +10,7 @@ public class AprilTagPoseEstimateCommand extends Command {
     private final LimelightSubsystem limelight;
     private final SwerveDriveSubsystem drive;
     private final SendableChooser<LimelightPipeline> pipeline;
-    public boolean hasPose;
+    private PoseEstimate lastPose;
     public boolean log;
 
 
@@ -22,46 +19,46 @@ public class AprilTagPoseEstimateCommand extends Command {
         this.limelight = limelight;
         this.drive = drive;
         this.pipeline = LimelightPipeline.makeChooser();
+        this.lastPose = null;
 
         SmarterDashboard.putChooser("AprilTagPoseEstimateCommand/Pipeline", pipeline);
         SmarterDashboard.putData("AprilTagPoseEstimateCommand", builder -> {
-            builder.addBoolean("HasPose?", () -> hasPose);
+            builder.addBoolean("HasPose?", () -> lastPose != null);
+            builder.addPose("LastPose", () -> lastPose == null ? null : lastPose.pose);
             builder.addBoolean("Log?", () -> log, val -> log = val);
         });
     }
 
     @Override
     public void initialize() {
-        hasPose = false;
+        lastPose = null;
         limelight.setPipeline(pipeline.getSelected());
     }
 
     @Override
     public void execute() {
 
-        PoseEstimate pose = limelight.getPoseEstimate();
-        if (pose == null) {
-            hasPose = false;
+        lastPose = limelight.getPoseEstimate();
+        if (lastPose == null) {
             return;
         }
 
-        hasPose = true;
         if (log) {
             System.out.printf("Pose Estimate Information:%n");
-            System.out.printf("Timestamp (Seconds): %.3f%n", pose.timestampSeconds);
-            System.out.printf("Latency: %.3f ms%n", pose.latency);
-            System.out.printf("Tag Count: %d%n", pose.tagCount);
-            System.out.printf("Tag Span: %.2f meters%n", pose.tagSpan);
-            System.out.printf("Average Tag Distance: %.2f meters%n", pose.averageTagDistance);
-            System.out.printf("Average Tag Area: %.2f%% of image%n", pose.averageTagArea);
+            System.out.printf("Timestamp (Seconds): %.3f%n", lastPose.timestampSeconds);
+            System.out.printf("Latency: %.3f ms%n", lastPose.latency);
+            System.out.printf("Tag Count: %d%n", lastPose.tagCount);
+            System.out.printf("Tag Span: %.2f meters%n", lastPose.tagSpan);
+            System.out.printf("Average Tag Distance: %.2f meters%n", lastPose.averageTagDistance);
+            System.out.printf("Average Tag Area: %.2f%% of image%n", lastPose.averageTagArea);
             System.out.println();
         }
 
-        drive.acceptPoseEstimate(pose);
+        drive.acceptPoseEstimate(lastPose);
     }
 
     @Override
     public void end(boolean interrupted) {
-        hasPose = false;
+        lastPose = null;
     }
 }

@@ -1,8 +1,7 @@
-package frc.robot.commands.arm;
+package frc.robot.arm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.util.SmarterDashboard;
 
 import java.util.function.DoubleSupplier;

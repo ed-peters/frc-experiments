@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision;
+package frc.robot.limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleArrayEntry;
@@ -64,7 +64,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         if (fieldPoseSupplier != null) {
             Pose2d pose = fieldPoseSupplier.get();
             if (pose != null) {
@@ -74,6 +73,5 @@ public class LimelightSubsystem extends SubsystemBase {
                 });
             }
         }
-
     }
 }
