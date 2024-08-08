@@ -1,45 +1,38 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.SmarterDashboard;
 
+/**
+ * Command to drive the robot at a fixed speed. Use e.g. {@link Command#withTimeout(double)}
+ * to restrict this to run for a specific amount of time.
+ */
 public class DriveAtFixedSpeedCommand extends Command {
 
-    public static final double DEFAULT_DRIVE_TIME = 1.0;
-    public static final ChassisSpeeds DEFAULT_DRIVE_SPEED = new ChassisSpeeds(
-            Units.feetToMeters(3.0),
-            0.0,
-            0.0);
-
     private final SwerveDriveSubsystem drive;
-    private double driveTime;
-    private ChassisSpeeds driveSpeed;
-    private double startTime;
+    private final ChassisSpeeds driveSpeed;
+    private boolean active;
 
-    public DriveAtFixedSpeedCommand(String name, SwerveDriveSubsystem drive) {
+    public DriveAtFixedSpeedCommand(String name, SwerveDriveSubsystem drive, ChassisSpeeds driveSpeed) {
 
         this.drive = drive;
-        this.driveTime = DEFAULT_DRIVE_TIME;
-        this.driveSpeed = DEFAULT_DRIVE_SPEED;
-        this.startTime = Double.NaN;
+        this.driveSpeed = driveSpeed;
+        this.active = false;
 
         addRequirements(drive);
 
         SmarterDashboard.putData(name, builder -> {
-            builder.displayAsDegrees("Tuning/DriveSpeedOmega", () -> driveSpeed.omegaRadiansPerSecond, val -> driveSpeed.omegaRadiansPerSecond = val);
-            builder.displayAsFeet("Tuning/DriveSpeedX", () -> driveSpeed.vxMetersPerSecond, val -> driveSpeed.vxMetersPerSecond = val);
-            builder.displayAsFeet("Tuning/DriveSpeedY", () -> driveSpeed.vyMetersPerSecond, val -> driveSpeed.vyMetersPerSecond = val);
-            builder.addDouble("Tuning/DriveTime", () -> driveTime, val -> driveTime = val);
-            builder.addDouble("Output/StartTime", () -> startTime, val -> startTime = val);
+            builder.addBoolean("Active?", () -> active);
+            builder.displayAsDegrees("SpeedOmega", () -> driveSpeed.omegaRadiansPerSecond);
+            builder.displayAsFeet("SpeedX", () -> driveSpeed.vxMetersPerSecond);
+            builder.displayAsFeet("SpeedY", () -> driveSpeed.vyMetersPerSecond);
         });
     }
 
     @Override
     public void initialize() {
-        startTime = Timer.getFPGATimestamp();
+        active = true;
     }
 
     @Override
@@ -49,11 +42,12 @@ public class DriveAtFixedSpeedCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - startTime > driveTime;
+        return active;
     }
 
     @Override
     public void end(boolean interrupted) {
+        active = false;
         drive.stop();
     }
 }
